@@ -1,13 +1,15 @@
 import sys
 import pygame
+from config import config
 
 def run_game():
     pygame.init()
-    screen = pygame.display.set_mode((800,600))
+    conf = config()
+    screen = pygame.display.set_mode((conf.screen_width,conf.screen_heigth))
     pygame.display.set_caption("Invasion alienigena")
 
     #Stablish background color
-    bg_color = (230,230,230)
+    bg_color = conf.bg_color
 
     #Game loop
     while True:
