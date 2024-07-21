@@ -1,6 +1,6 @@
 import pygame
 
-class ship:
+class Ship:
     """Define the ship behavior"""
     def __init__(self, screen) -> None:
         self.screen = screen

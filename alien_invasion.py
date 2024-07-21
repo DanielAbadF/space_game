@@ -1,6 +1,7 @@
 import sys
 import pygame
 from config import config
+from ship import Ship
 
 def run_game():
     pygame.init()
@@ -11,6 +12,9 @@ def run_game():
     #Stablish background color
     bg_color = conf.bg_color
 
+    #Create a ship
+    ship = Ship(screen)
+
     #Game loop
     while True:
         for event in pygame.event.get():
@@ -18,6 +22,7 @@ def run_game():
                 sys.exit()
 
         screen.fill(bg_color)
+        ship.blitme()
         pygame.display.flip()
 
 run_game()
