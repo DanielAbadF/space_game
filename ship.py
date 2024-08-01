@@ -1,9 +1,10 @@
 import pygame
+from config import config
 
 class Ship:
     """Manages the ship behavior"""
 
-    def __init__(self, screen) -> None:
+    def __init__(self, config:config,screen) -> None:
         """Initialice the ship and stablish its start point"""
         self.screen  = screen
 
@@ -17,11 +18,13 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
 
+        self.center = float(self.rect.centerx)
+
     def blitme(self):
         self.screen.blit(self.image, self.rect)
 
     def update(self):
         if(self.moving_right == True):
-            self.rect.centerx += 1
+            self.rect.centerx += self.config.speed_ship_factor 
         if(self.moving_left == True):
-            self.rect.centerx -= 1
+            self.rect.centerx -= self.config.speed_ship_factor
