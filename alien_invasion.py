@@ -18,9 +18,7 @@ def run_game():
 
     #Game loop
     while True:
-        gf.verify_events()
-        screen.fill(bg_color)
-        ship.blitme()
-        pygame.display.flip()   
+        gf.verify_events(ship)
+        gf.update_screen(conf, screen, ship)  
 
 run_game()
