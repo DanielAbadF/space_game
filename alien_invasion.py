@@ -30,8 +30,8 @@ def run_game():
     while True:
         gf.verify_events(conf, screen, ship, bullets)
         ship.update()
-        gf.update_bullets(aliens, bullets)
-        gf.update_aliens(conf, aliens)      
+        gf.update_bullets(conf, screen, ship, aliens, bullets)
+        gf.update_aliens(conf, aliens)  
         gf.update_screen(conf, screen, ship, aliens, bullets)  
 
 run_game()
