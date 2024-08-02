@@ -43,12 +43,15 @@ def update_screen(config:Config, screen, ship:Ship, aliens:Group, bullets:Group)
          bullet.draw_bullet()
     pygame.display.flip()
 
-def update_bullets(bullets):
+def update_bullets(bullets, aliens):
      bullets.update()
 
      for bullet in bullets.copy():
           if bullet.rect.bottom <= 0:
                bullets.remove(bullet)
+     
+     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+     
 
 def update_aliens(configs, aliens:Group):
       check_fleet_edges(configs, aliens)
