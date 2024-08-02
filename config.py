@@ -11,3 +11,12 @@ class Config:
         self.bullet_height = 10
         self.bullet_color = (60, 60, 60)
         self.allowed_bullets = 3    
+
+        #Alien configs
+
+        self.alien_speed_factor = 1
+        self.fleet_drop_speed = 10
+        
+        #Fleet direction = 1 represents right and -1 represents left 
+        self.fleet_direction = 1
+

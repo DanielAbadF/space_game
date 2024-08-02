@@ -4,6 +4,7 @@ import pygame
 from config import Config
 from ship import Ship
 import game_functions as gf
+from alien import Alien
 
 
 def run_game():
@@ -17,15 +18,20 @@ def run_game():
 
     #Create a ship
     ship = Ship(conf, screen)
-
     #Group to store bullets 
     bullets = Group()
+    #Create an alien fleet
+    aliens = Group()
+
+    gf.create_fleet(conf, screen, ship, aliens)
+
 
     #Game loop
     while True:
         gf.verify_events(conf, screen, ship, bullets)
         ship.update()
         gf.update_bullets(bullets)
-        gf.update_screen(conf, screen, ship, bullets)  
+        gf.update_aliens(conf, aliens)
+        gf.update_screen(conf, screen, ship, aliens, bullets)  
 
 run_game()
