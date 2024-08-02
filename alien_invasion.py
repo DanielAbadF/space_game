@@ -1,12 +1,14 @@
+from pygame.sprite import Group
 import sys
 import pygame
-from config import config
+from config import Config
 from ship import Ship
 import game_functions as gf
 
+
 def run_game():
     pygame.init()
-    conf = config()
+    conf = Config()
     screen = pygame.display.set_mode((conf.screen_width,conf.screen_heigth))
     pygame.display.set_caption("Invasion alienigena")
 
@@ -14,12 +16,16 @@ def run_game():
     bg_color = conf.bg_color
 
     #Create a ship
-    ship = Ship(screen)
+    ship = Ship(conf, screen)
+
+    #Group to store bullets 
+    bullets = Group()
 
     #Game loop
     while True:
-        gf.verify_events(ship)
+        gf.verify_events(conf, screen, ship, bullets)
         ship.update()
-        gf.update_screen(conf, screen, ship)  
+        gf.update_bullets(bullets)
+        gf.update_screen(conf, screen, ship, bullets)  
 
 run_game()
