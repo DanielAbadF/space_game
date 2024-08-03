@@ -5,6 +5,7 @@ class Config:
         self.screen_heigth = 600
         self.bg_color = (230,230,230)
         self.speed_ship_factor = 1.5
+        self.number_ships = 3
 
         self.bullet_speed_factor = 0.5
         self.bullet_width = 3

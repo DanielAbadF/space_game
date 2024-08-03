@@ -5,6 +5,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from pygame.sprite import Group
+from time import sleep
 
 def verify_keyDown_events(event, configs, screen, ship:Ship, bullets):
      if event.key == pygame.K_RIGHT:
@@ -45,20 +46,51 @@ def update_screen(config:Config, screen, ship:Ship, aliens:Group, bullets:Group)
 
 def update_bullets(conf, screen, ship, aliens, bullets:Group):
      bullets.update()
+     remove_bullets_out(bullets)
+     check_alien_bullet_collisions(bullets, aliens)
+     new_fleet_if_empty(conf, screen, ship, aliens, bullets)
 
+def remove_bullets_out(bullets:Group):
      for bullet in bullets.copy():
           if bullet.rect.bottom <= 0:
                bullets.remove(bullet)
-     
-     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+def check_alien_bullet_collisions(aliens, bullets):
+     pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+def new_fleet_if_empty(conf, screen, ship, aliens, bullets):
      if(len(aliens) == 0):
           bullets.empty()
           create_fleet(conf, screen, ship, aliens)
 
+def ship_chashed(stats, config, screen, ship, aliens, bullets):
+     """Response for the crash of the ship and an alien"""
 
-def update_aliens(configs, aliens:Group):
+     stats.ships_left -= 1
+
+     aliens.empty()
+     bullets.empty()
+
+     #Creates a new fleet and center the ship
+     create_fleet(config, screen, ship, aliens) 
+     ship.center_ship()
+     sleep(0.5)
+
+def check_aliens_bottom(config, stats, screen, ship, aliens, bullets):
+     screen_rect = screen.get_rect() 
+
+     for alien in aliens.sprites():
+          if alien.rect.bottom >= screen_rect.bottom:
+               ship_chashed(stats, config, screen, ship, aliens, bullets)
+               break
+
+def update_aliens(configs, stats, screen,ship, aliens:Group, bullets):
       check_fleet_edges(configs, aliens)
       aliens.update()
+      if(pygame.sprite.spritecollideany(ship, aliens)):
+           ship_chashed(stats, configs, screen, ship, aliens, bullets)     
+
+      check_aliens_bottom(configs, stats, screen, ship, aliens, bullets)
 
 def fire_bullet(configs, screen, ship, bullets):
       if len(bullets) < configs.allowed_bullets:
