@@ -20,9 +20,16 @@ def verify_keyDown_events(event, configs:Config, screen, ship:Ship, bullets:Grou
           sys.exit()
     
 
-def check_play_button(stats:Stats, play_button, mouse_x, mouse_y):
-     if play_button.rect.collidepoint(mouse_x, mouse_y):
+def check_play_button(config, screen, stats:Stats, play_button, ship:Ship, aliens:Group, bullets:Group, mouse_x, mouse_y):
+     if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
+          pygame.mouse.set_visible(False)
+          stats.reset_stats()
           stats.game_active = True
+          aliens.empty()
+          bullets.empty()
+          create_fleet(config, screen, ship, aliens)
+          ship.center_ship()
+
 
 def verify_keyUp_events(event, ship:Ship):
      if event.key == pygame.K_RIGHT:
@@ -30,7 +37,7 @@ def verify_keyUp_events(event, ship:Ship):
      elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def verify_events(config, screen, stats, play_button, ship:Ship, bullets):
+def verify_events(config, screen, stats, play_button,aliens:Group, ship:Ship, bullets:Group):
     """Response for the keyboard and mouse events"""
 
     for event in pygame.event.get():
@@ -42,7 +49,7 @@ def verify_events(config, screen, stats, play_button, ship:Ship, bullets):
                  verify_keyUp_events(event, ship)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                  mouse_x, mouse_y = pygame.mouse.get_pos()
-                 check_play_button(stats, play_button, mouse_x, mouse_y)
+                 check_play_button(config, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
 
 def update_screen(config:Config, screen, stats:Stats, ship:Ship, aliens:Group, bullets:Group, play_button:Button):
     """Update the screen and show the new screen"""
@@ -91,6 +98,7 @@ def ship_chashed(stats, config, screen, ship, aliens, bullets):
           sleep(0.5)
      else:
           stats.game_active = False
+          pygame.mouse.set_visible(True)
 
 def check_aliens_bottom(config, stats, screen, ship, aliens, bullets):
      screen_rect = screen.get_rect() 
