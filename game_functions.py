@@ -6,8 +6,10 @@ from bullet import Bullet
 from alien import Alien
 from pygame.sprite import Group
 from time import sleep
+from button import Button
+from game_stats import Stats
 
-def verify_keyDown_events(event, configs, screen, ship:Ship, bullets):
+def verify_keyDown_events(event, configs:Config, screen, ship:Ship, bullets:Group):
      if event.key == pygame.K_RIGHT:
             ship.moving_right = True
      elif event.key == pygame.K_LEFT:
@@ -16,6 +18,11 @@ def verify_keyDown_events(event, configs, screen, ship:Ship, bullets):
           fire_bullet(configs, screen, ship, bullets)
      elif event.key == pygame.K_q:
           sys.exit()
+    
+
+def check_play_button(stats:Stats, play_button, mouse_x, mouse_y):
+     if play_button.rect.collidepoint(mouse_x, mouse_y):
+          stats.game_active = True
 
 def verify_keyUp_events(event, ship:Ship):
      if event.key == pygame.K_RIGHT:
@@ -23,7 +30,7 @@ def verify_keyUp_events(event, ship:Ship):
      elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def verify_events(config, screen, ship:Ship, bullets):
+def verify_events(config, screen, stats, play_button, ship:Ship, bullets):
     """Response for the keyboard and mouse events"""
 
     for event in pygame.event.get():
@@ -33,8 +40,11 @@ def verify_events(config, screen, ship:Ship, bullets):
                  verify_keyDown_events(event, config, screen, ship, bullets)
             elif event.type == pygame.KEYUP:
                  verify_keyUp_events(event, ship)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                 mouse_x, mouse_y = pygame.mouse.get_pos()
+                 check_play_button(stats, play_button, mouse_x, mouse_y)
 
-def update_screen(config:Config, screen, ship:Ship, aliens:Group, bullets:Group):
+def update_screen(config:Config, screen, stats:Stats, ship:Ship, aliens:Group, bullets:Group, play_button:Button):
     """Update the screen and show the new screen"""
 
     screen.fill(config.bg_color)
@@ -42,7 +52,11 @@ def update_screen(config:Config, screen, ship:Ship, aliens:Group, bullets:Group)
     aliens.draw(screen)
     for bullet in bullets.sprites():
          bullet.draw_bullet()
+    if not stats.game_active:
+         play_button.draw_button() 
     pygame.display.flip()
+
+    
 
 def update_bullets(conf, screen, ship, aliens, bullets:Group):
      bullets.update()
@@ -65,16 +79,18 @@ def new_fleet_if_empty(conf, screen, ship, aliens, bullets):
 
 def ship_chashed(stats, config, screen, ship, aliens, bullets):
      """Response for the crash of the ship and an alien"""
+     if stats.ships_left > 0:
+          stats.ships_left -= 1
 
-     stats.ships_left -= 1
+          aliens.empty()
+          bullets.empty()
 
-     aliens.empty()
-     bullets.empty()
-
-     #Creates a new fleet and center the ship
-     create_fleet(config, screen, ship, aliens) 
-     ship.center_ship()
-     sleep(0.5)
+          #Creates a new fleet and center the ship
+          create_fleet(config, screen, ship, aliens) 
+          ship.center_ship()
+          sleep(0.5)
+     else:
+          stats.game_active = False
 
 def check_aliens_bottom(config, stats, screen, ship, aliens, bullets):
      screen_rect = screen.get_rect() 

@@ -6,6 +6,7 @@ from ship import Ship
 import game_functions as gf
 from alien import Alien
 from game_stats import Stats 
+from button import Button
 
 def run_game():
     pygame.init()
@@ -16,6 +17,10 @@ def run_game():
     #Stablish background color
     bg_color = conf.bg_color
 
+
+    #Game start button
+    play_button = Button(conf, screen, "Play")
+
     #Game stats
     stats = Stats(conf)
     #Create a ship
@@ -24,16 +29,17 @@ def run_game():
     bullets = Group()
     #Create an alien fleet
     aliens = Group()
-        
+
     gf.create_fleet(conf, screen, ship, aliens)
 
 
     #Game loop
     while True:
-        gf.verify_events(conf, screen, ship, bullets)
-        ship.update()
-        gf.update_bullets(conf, screen, ship, aliens, bullets)
-        gf.update_aliens(conf, stats, screen, ship, aliens, bullets )  
-        gf.update_screen(conf, screen, ship, aliens, bullets)  
+        gf.verify_events(conf, screen, stats, play_button, ship, bullets)
+        if stats.game_active:       
+            ship.update()
+            gf.update_bullets(conf, screen, ship, aliens, bullets)
+            gf.update_aliens(conf, stats, screen, ship, aliens, bullets )  
+        gf.update_screen(conf, screen, stats, ship, aliens, bullets, play_button)  
 
 run_game()
