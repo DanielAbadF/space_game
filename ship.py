@@ -13,6 +13,7 @@ class Ship:
         self.screen_rect = screen.get_rect()
 
         self.rect.centerx = self.screen_rect.centerx
+        self.x = self.rect.centerx
         self.rect.bottom = self.screen_rect.bottom
 
         self.moving_right = False
@@ -29,6 +30,7 @@ class Ship:
 
     def update(self):
         if(self.moving_right and self.rect.right < self.screen_rect.right):
-            self.rect.centerx += self.config.speed_ship_factor 
+            self.x += self.config.speed_ship_factor 
         if(self.moving_left and self.rect.left > self.screen_rect.left):
-            self.rect.centerx -= self.config.speed_ship_factor
+            self.x -= self.config.speed_ship_factor
+        self.rect.centerx = self.x

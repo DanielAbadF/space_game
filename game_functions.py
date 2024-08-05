@@ -20,8 +20,9 @@ def verify_keyDown_events(event, configs:Config, screen, ship:Ship, bullets:Grou
           sys.exit()
     
 
-def check_play_button(config, screen, stats:Stats, play_button, ship:Ship, aliens:Group, bullets:Group, mouse_x, mouse_y):
+def check_play_button(config:Config, screen, stats:Stats, play_button, ship:Ship, aliens:Group, bullets:Group, mouse_x, mouse_y):
      if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
+          config.initialize_dinamic_configs()
           pygame.mouse.set_visible(False)
           stats.reset_stats()
           stats.game_active = True
@@ -79,10 +80,12 @@ def remove_bullets_out(bullets:Group):
 def check_alien_bullet_collisions(aliens, bullets):
      pygame.sprite.groupcollide(bullets, aliens, True, True)
 
-def new_fleet_if_empty(conf, screen, ship, aliens, bullets):
+def new_fleet_if_empty(conf:Config, screen, ship, aliens, bullets):
      if(len(aliens) == 0):
           bullets.empty()
+          conf.increase_speed()
           create_fleet(conf, screen, ship, aliens)
+
 
 def ship_chashed(stats, config, screen, ship, aliens, bullets):
      """Response for the crash of the ship and an alien"""
