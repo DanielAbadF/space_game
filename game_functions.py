@@ -8,6 +8,7 @@ from pygame.sprite import Group
 from time import sleep
 from button import Button
 from game_stats import Stats
+from marker import Marker
 
 def verify_keyDown_events(event, configs:Config, screen, ship:Ship, bullets:Group):
      if event.key == pygame.K_RIGHT:
@@ -52,24 +53,27 @@ def verify_events(config, screen, stats, play_button,aliens:Group, ship:Ship, bu
                  mouse_x, mouse_y = pygame.mouse.get_pos()
                  check_play_button(config, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
 
-def update_screen(config:Config, screen, stats:Stats, ship:Ship, aliens:Group, bullets:Group, play_button:Button):
+def update_screen(config:Config, screen, marker, stats:Stats, ship:Ship, aliens:Group, bullets:Group, play_button:Button):
     """Update the screen and show the new screen"""
 
     screen.fill(config.bg_color)
+    
     ship.blitme()
     aliens.draw(screen)
     for bullet in bullets.sprites():
          bullet.draw_bullet()
+    marker.show_score(   )
     if not stats.game_active:
-         play_button.draw_button() 
+         play_button.draw_button()
+
     pygame.display.flip()
 
     
 
-def update_bullets(conf, screen, ship, aliens, bullets:Group):
+def update_bullets(conf, screen, stats, marker, ship, aliens, bullets:Group):
      bullets.update()
      remove_bullets_out(bullets)
-     check_alien_bullet_collisions(bullets, aliens)
+     check_alien_bullet_collisions(conf, screen, stats, marker, aliens, bullets)
      new_fleet_if_empty(conf, screen, ship, aliens, bullets)
 
 def remove_bullets_out(bullets:Group):
@@ -77,8 +81,15 @@ def remove_bullets_out(bullets:Group):
           if bullet.rect.bottom <= 0:
                bullets.remove(bullet)
 
-def check_alien_bullet_collisions(aliens, bullets):
-     pygame.sprite.groupcollide(bullets, aliens, True, True)
+def check_alien_bullet_collisions(config:Config, screen, stats:Stats, marker:Marker,aliens:Group, bullets:Group):
+     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+     if collisions:
+          stats.score += config.alien_points * len({item for sublist in collisions.values() for item in sublist})
+          stats.top_score = max(stats.top_score, stats.score)
+          marker.create_score()
+          marker.create_top_score()
+          
 
 def new_fleet_if_empty(conf:Config, screen, ship, aliens, bullets):
      if(len(aliens) == 0):

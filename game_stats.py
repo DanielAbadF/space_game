@@ -7,6 +7,7 @@ class Stats():
 
         #Initialize the gamer in an active state 
         self.game_active = False
+        self.top_score = 0
 
     def reset_stats(self):
         """Initialize stats that can change during the game"""

@@ -7,6 +7,7 @@ import game_functions as gf
 from alien import Alien
 from game_stats import Stats 
 from button import Button
+from marker import Marker
 
 def run_game():
     pygame.init()
@@ -23,6 +24,7 @@ def run_game():
 
     #Game stats
     stats = Stats(conf)
+    marker = Marker(conf, screen, stats)
     #Create a ship
     ship = Ship(conf, screen)
     #Group to store bullets 
@@ -38,8 +40,8 @@ def run_game():
         gf.verify_events(conf, screen, stats, play_button, aliens, ship, bullets)
         if stats.game_active:       
             ship.update()
-            gf.update_bullets(conf, screen, ship, aliens, bullets)
+            gf.update_bullets(conf, screen, stats, marker, ship, aliens, bullets)
             gf.update_aliens(conf, stats, screen, ship, aliens, bullets )  
-        gf.update_screen(conf, screen, stats, ship, aliens, bullets, play_button)  
-    
+        gf.update_screen(conf, screen, marker, stats, ship, aliens, bullets, play_button)  
+
 run_game()
